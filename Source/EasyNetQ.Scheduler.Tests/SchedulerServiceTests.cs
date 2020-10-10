@@ -1,11 +1,10 @@
 ﻿// ReSharper disable InconsistentNaming
 
-using EasyNetQ.SystemMessages;
 using EasyNetQ.Topology;
 using NSubstitute;
 using Xunit;
 using System.Collections.Generic;
-using System.Linq;
+using EasyNetQ.ExternalScheduler;
 
 namespace EasyNetQ.Scheduler.Tests
 {
@@ -27,7 +26,7 @@ namespace EasyNetQ.Scheduler.Tests
             scheduleRepository = Substitute.For<IScheduleRepository>();
 
             schedulerService = new SchedulerService(
-                bus, 
+                bus,
                 scheduleRepository,
                 new SchedulerServiceConfiguration
                 {

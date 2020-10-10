@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using EasyNetQ.SystemMessages;
+using EasyNetQ.ExternalScheduler;
 
 namespace EasyNetQ.Scheduler.Tests
 {
     public class MockScheduleRepository : IScheduleRepository
     {
-        public Func<IList<ScheduleMe>> GetPendingDelegate { get; set; } 
+        public Func<IList<ScheduleMe>> GetPendingDelegate { get; set; }
 
         public void Store(ScheduleMe scheduleMe)
         {
@@ -20,9 +20,7 @@ namespace EasyNetQ.Scheduler.Tests
 
         public IList<ScheduleMe> GetPending()
         {
-            return (GetPendingDelegate != null)
-                       ? GetPendingDelegate()
-                       : null;
+            return GetPendingDelegate?.Invoke();
         }
 
         public void Purge()

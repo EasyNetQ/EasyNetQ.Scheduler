@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Configuration;
-using EasyNetQ.Scheduler.Mongo.Core;
 
 namespace EasyNetQ.Scheduler.Mongo
 {
@@ -16,13 +15,13 @@ namespace EasyNetQ.Scheduler.Mongo
         {
             var connectionString = ConfigurationManager.ConnectionStrings["mongodb"];
             return new ScheduleRepositoryConfiguration
-                {
-                    ConnectionString = connectionString.ConnectionString,
-                    CollectionName = ConfigurationManager.AppSettings["collectionName"],
-                    DatabaseName = ConfigurationManager.AppSettings["databaseName"],
-                    DeleteTimeout = GetTimeSpanAppSettings("deleteTimeout"),
-                    PublishTimeout = GetTimeSpanAppSettings("publishTimeout")
-                };
+            {
+                ConnectionString = connectionString.ConnectionString,
+                CollectionName = ConfigurationManager.AppSettings["collectionName"],
+                DatabaseName = ConfigurationManager.AppSettings["databaseName"],
+                DeleteTimeout = GetTimeSpanAppSettings("deleteTimeout"),
+                PublishTimeout = GetTimeSpanAppSettings("publishTimeout")
+            };
         }
     }
 }

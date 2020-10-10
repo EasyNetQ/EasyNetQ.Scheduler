@@ -1,15 +1,12 @@
 // ReSharper disable InconsistentNaming
-using EasyNetQ.SystemMessages;
 using EasyNetQ.Topology;
-using EasyNetQ.Tests;
-using NSubstitute;
 using Xunit;
 using System;
 using System.Text;
+using EasyNetQ.ExternalScheduler;
 
 namespace EasyNetQ.Scheduler.Tests
 {
-    [Explicit("Required a database")]
     public class ScheduleRepositoryTests
     {
         private ScheduleRepository scheduleRepository;
@@ -25,8 +22,7 @@ namespace EasyNetQ.Scheduler.Tests
             scheduleRepository = new ScheduleRepository(configuration, () => DateTime.UtcNow);
         }
 
-        [Fact]
-        [Explicit("Required a database")]
+        [Fact(Skip = "Required a database")]
         public void Should_be_able_to_store_a_schedule()
         {
             scheduleRepository.Store(new ScheduleMe
@@ -39,8 +35,7 @@ namespace EasyNetQ.Scheduler.Tests
             });
         }
 
-        [Fact]
-        [Explicit("Required a database")]
+        [Fact(Skip = "Required a database")]
         public void Should_be_able_to_store_a_schedule_with_exchange()
         {
             var typeNameSerializer = new LegacyTypeNameSerializer();
@@ -64,8 +59,7 @@ namespace EasyNetQ.Scheduler.Tests
             });
         }
 
-        [Fact]
-        [Explicit("Required a database")]
+        [Fact(Skip = "Required a database")]
         public void Should_be_able_to_cancel_a_schedule()
         {
             scheduleRepository.Cancel(new UnscheduleMe
@@ -74,15 +68,14 @@ namespace EasyNetQ.Scheduler.Tests
             });
         }
 
-        [Fact]
-        [Explicit("Required a database")]
+        [Fact(Skip = "Required a database")]
         public void Should_be_able_to_get_messages()
         {
             var schedules = scheduleRepository.GetPending();
             foreach (var scheduleMe in schedules)
             {
-                Console.WriteLine("key: {0}, waketime: {1}, exchange {2}, type: {3}, properties: {4}, routing: {5}, body:{6}", 
-                    scheduleMe.BindingKey, 
+                Console.WriteLine("key: {0}, waketime: {1}, exchange {2}, type: {3}, properties: {4}, routing: {5}, body:{6}",
+                    scheduleMe.BindingKey,
                     scheduleMe.WakeTime,
                     scheduleMe.Exchange,
                     scheduleMe.ExchangeType,
@@ -92,8 +85,7 @@ namespace EasyNetQ.Scheduler.Tests
             }
         }
 
-        [Fact]
-        [Explicit("Required a database")]
+        [Fact(Skip = "Required a database")]
         public void Should_be_able_to_purge_messages()
         {
             scheduleRepository.Purge();

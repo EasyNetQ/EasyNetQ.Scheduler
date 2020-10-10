@@ -1,15 +1,12 @@
 using System;
 using System.Text;
-using EasyNetQ.Scheduler.Mongo.Core;
-using EasyNetQ.Tests;
 using Xunit;
 
 namespace EasyNetQ.Scheduler.Mongo.Tests
 {
-    [Explicit("Required a database")]
     public class ScheduleRepositoryTests
     {
-        private ScheduleRepository scheduleRepository;
+        private readonly ScheduleRepository scheduleRepository;
 
         public ScheduleRepositoryTests()
         {
@@ -24,8 +21,7 @@ namespace EasyNetQ.Scheduler.Mongo.Tests
             scheduleRepository = new ScheduleRepository(configuration, () => DateTime.UtcNow);
         }
 
-        [Fact]
-        [Explicit("Required a database")]
+        [Fact(Skip = "Required a database")]
         public void Should_be_able_to_store_a_schedule()
         {
             scheduleRepository.Store(new Schedule
@@ -39,15 +35,13 @@ namespace EasyNetQ.Scheduler.Mongo.Tests
                 });
         }
 
-        [Fact]
-        [Explicit("Required a database")]
+        [Fact(Skip = "Required a database")]
         public void Should_be_able_to_cancel_a_schedule()
         {
             scheduleRepository.Cancel("bcd");
         }
 
-        [Fact]
-        [Explicit("Required a database")]
+        [Fact(Skip = "Required a database")]
         public void Should_be_able_to_get_messages()
         {
             while (true)
@@ -62,16 +56,14 @@ namespace EasyNetQ.Scheduler.Mongo.Tests
             }
         }
 
-        [Fact]
-        [Explicit("Required a database")]
+        [Fact(Skip = "Required a database")]
         public void Should_be_able_to_handle_timeout()
         {
             scheduleRepository.HandleTimeout();
         }
 
 
-        [Fact]
-        [Explicit("Required a database")]
+        [Fact(Skip = "Required a database")]
         public void Should_be_able_to_mark_as_published()
         {
             scheduleRepository.MarkAsPublished(Guid.Empty);

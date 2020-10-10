@@ -1,6 +1,4 @@
 ﻿using System;
-using EasyNetQ.Scheduler.Mongo.Core;
-using log4net;
 
 namespace EasyNetQ.Scheduler.Mongo
 {
@@ -11,10 +9,7 @@ namespace EasyNetQ.Scheduler.Mongo
             var serviceConfig = SchedulerServiceConfiguration.FromConfigFile();
             var bus = RabbitHutch.CreateBus("host=localhost", sr =>
             {
-                if (serviceConfig.EnableLegacyConventions)
-                {
-                    sr.EnableLegacyConventions();
-                }
+                if (serviceConfig.EnableLegacyConventions) sr.EnableLegacyConventions();
             });
 
             return new SchedulerService(

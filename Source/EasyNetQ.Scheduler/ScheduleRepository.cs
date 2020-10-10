@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Threading;
-using EasyNetQ.SystemMessages;
+using EasyNetQ.ExternalScheduler;
 using log4net;
 using Newtonsoft.Json;
 
@@ -20,7 +20,7 @@ namespace EasyNetQ.Scheduler
     public class ScheduleRepository : IScheduleRepository
     {
         private readonly ILog logger = LogManager.GetLogger(typeof(ScheduleRepository));
-        
+
         private readonly ScheduleRepositoryConfiguration configuration;
         private readonly Func<DateTime> now;
         private readonly ISqlDialect dialect;

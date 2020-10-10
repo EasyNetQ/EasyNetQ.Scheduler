@@ -1,6 +1,5 @@
-﻿using EasyNetQ.Scheduler.Mongo.Core;
+﻿using log4net.Config;
 using Topshelf;
-using log4net.Config;
 
 namespace EasyNetQ.Scheduler.Mongo
 {
@@ -11,33 +10,34 @@ namespace EasyNetQ.Scheduler.Mongo
             XmlConfigurator.Configure();
 
             HostFactory.Run(hostConfiguration =>
+            {
+                hostConfiguration.EnableServiceRecovery(serviceRecoveryConfiguration =>
                 {
-                    hostConfiguration.EnableServiceRecovery( serviceRecoveryConfiguration =>
-                    {
-                        serviceRecoveryConfiguration.RestartService( delayInMinutes: 1 ); // On the first service failure, reset service after a minute
-                        serviceRecoveryConfiguration.SetResetPeriod( days: 0 ); // Reset failure count after every failure
-                    } );
-                    hostConfiguration.RunAsLocalSystem();
-                    hostConfiguration.SetDescription("EasyNetQ.Scheduler");
-                    hostConfiguration.SetDisplayName("EasyNetQ.Scheduler");
-                    hostConfiguration.SetServiceName("EasyNetQ.Scheduler");
-
-                    hostConfiguration.Service<ISchedulerService>(serviceConfiguration =>
-                        {
-                            serviceConfiguration.ConstructUsing(_ => SchedulerServiceFactory.CreateScheduler());
-
-                            serviceConfiguration.WhenStarted((service, _) =>
-                                {
-                                    service.Start();
-                                    return true;
-                                });
-                            serviceConfiguration.WhenStopped((service, _) =>
-                                {
-                                    service.Stop();
-                                    return true;
-                                });
-                        });
+                    serviceRecoveryConfiguration
+                        .RestartService(1); // On the first service failure, reset service after a minute
+                    serviceRecoveryConfiguration.SetResetPeriod(0); // Reset failure count after every failure
                 });
+                hostConfiguration.RunAsLocalSystem();
+                hostConfiguration.SetDescription("EasyNetQ.Scheduler");
+                hostConfiguration.SetDisplayName("EasyNetQ.Scheduler");
+                hostConfiguration.SetServiceName("EasyNetQ.Scheduler");
+
+                hostConfiguration.Service<ISchedulerService>(serviceConfiguration =>
+                {
+                    serviceConfiguration.ConstructUsing(_ => SchedulerServiceFactory.CreateScheduler());
+
+                    serviceConfiguration.WhenStarted((service, _) =>
+                    {
+                        service.Start();
+                        return true;
+                    });
+                    serviceConfiguration.WhenStopped((service, _) =>
+                    {
+                        service.Stop();
+                        return true;
+                    });
+                });
+            });
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using EasyNetQ.Scheduler.Mongo.Core;
-using EasyNetQ.Topology;
+﻿using EasyNetQ.Topology;
 using NSubstitute;
 using Xunit;
 using System;
@@ -59,7 +58,7 @@ namespace EasyNetQ.Scheduler.Mongo.Tests
 
 
         [Fact]
-        public void Should_hadle_publish_timeout_()
+        public void Should_handle_publish_timeout_()
         {
             schedulerService.OnHandleTimeoutTimerTick(null);
             scheduleRepository.Received().HandleTimeout();

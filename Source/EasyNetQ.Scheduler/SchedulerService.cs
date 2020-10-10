@@ -1,8 +1,8 @@
 using System;
 using System.Transactions;
-using EasyNetQ.SystemMessages;
 using EasyNetQ.Topology;
 using System.Collections.Concurrent;
+using EasyNetQ.ExternalScheduler;
 using log4net;
 
 namespace EasyNetQ.Scheduler

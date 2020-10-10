@@ -65,12 +65,8 @@
         are not Integration or Explicit tests. -->
     <Target Name="Test" DependsOnTargets="Build">
         <ItemGroup>
-            <TestProjects Include="$(Source)\EasyNetQ.Tests\EasyNetQ.Tests.csproj" />
-            <TestProjects Include="$(Source)\EasyNetQ.DI.Tests\EasyNetQ.DI.Tests.csproj" />
-            <TestProjects Include="$(Source)\EasyNetQ.Hosepipe.Tests\EasyNetQ.Hosepipe.Tests.csproj" />
             <TestProjects Include="$(Source)\EasyNetQ.Scheduler.Tests\EasyNetQ.Scheduler.Tests.csproj" />
             <TestProjects Include="$(Source)\EasyNetQ.Scheduler.Mongo.Tests\EasyNetQ.Scheduler.Mongo.Tests.csproj" />
-            <!--<TestProjects Include="$(Source)\EasyNetQ.IntegrationTests\EasyNetQ.IntegrationTests.csproj" />-->
 </ItemGroup>
 
 <Exec WorkingDirectory="%(TestProjects.RootDir)\%(TestProjects.Directory)"
@@ -85,7 +81,6 @@
         </PropertyGroup>
         <ItemGroup>
             <ClientLibraries Include="$(Source)\EasyNetQ\EasyNetQ.csproj" />
-            <ClientLibraries Include="$(Source)\EasyNetQ.DI.*\EasyNetQ.DI.*.csproj" Exclude="$(Source)\*Tests*\*.csproj" />
 
             <FilesToDelete Include="$(NuGetPackageDirectory)\*.nupkg" />
             <FilesToDelete Include="$(NuGetPackageDirectory)\*.snupkg" />
