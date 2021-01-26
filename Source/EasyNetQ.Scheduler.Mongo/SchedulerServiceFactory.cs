@@ -7,7 +7,7 @@ namespace EasyNetQ.Scheduler.Mongo
         public static ISchedulerService CreateScheduler()
         {
             var serviceConfig = SchedulerServiceConfiguration.FromConfigFile();
-            var bus = RabbitHutch.CreateBus("host=localhost", sr =>
+            var bus = RabbitHutch.CreateBus(serviceConfig.RabbitHost, sr =>
             {
                 if (serviceConfig.EnableLegacyConventions) sr.EnableLegacyConventions();
             });
