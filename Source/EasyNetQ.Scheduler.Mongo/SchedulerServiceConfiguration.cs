@@ -10,11 +10,13 @@ namespace EasyNetQ.Scheduler.Mongo
         public TimeSpan PublishInterval { get; set; }
         public TimeSpan HandleTimeoutInterval { get; set; }
         public int PublishMaxSchedules { get; set; }
+        public string RabbitHost { get; set; }
 
         public static SchedulerServiceConfiguration FromConfigFile()
         {
             return new SchedulerServiceConfiguration
             {
+                RabbitHost = ConfigurationManager.ConnectionStrings["rabbit"].ConnectionString,
                 SubscriptionId = ConfigurationManager.AppSettings["subscriptionId"],
                 PublishInterval = GetTimeSpanAppSettings("publishInterval"),
                 PublishMaxSchedules = GetIntAppSetting("publishMaxSchedules"),
