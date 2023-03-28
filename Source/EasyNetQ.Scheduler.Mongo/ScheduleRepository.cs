@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 
@@ -17,84 +18,99 @@ namespace EasyNetQ.Scheduler.Mongo
     {
         private readonly IScheduleRepositoryConfiguration configuration;
         private readonly Func<DateTime> getNow;
-        private readonly Lazy<MongoCollection<Schedule>> lazyCollection;
-        private readonly Lazy<MongoServer> lazyServer;
+        private readonly Lazy<IMongoCollection<Schedule>> lazyCollection;
 
         public ScheduleRepository(IScheduleRepositoryConfiguration configuration, Func<DateTime> getNow)
         {
             this.configuration = configuration;
             this.getNow = getNow;
-            lazyServer = new Lazy<MongoServer>(Connect);
-            lazyCollection = new Lazy<MongoCollection<Schedule>>(CreateAndIndex);
+            lazyCollection = new Lazy<IMongoCollection<Schedule>>(CreateAndIndex);
         }
 
-        private MongoServer Server => lazyServer.Value;
-
-        private MongoCollection<Schedule> Collection => lazyCollection.Value;
+        private IMongoCollection<Schedule> Collection => lazyCollection.Value;
 
         public void Store(Schedule schedule)
         {
-            Collection.Insert(schedule);
+            Collection.InsertOne(schedule);
         }
 
         public void Cancel(string cancellation)
         {
-            Collection.Remove(Query<Schedule>.EQ(x => x.CancellationKey, cancellation));
+            Collection.DeleteOne(x => x.CancellationKey == cancellation);
         }
 
         public Schedule GetPending()
         {
             var now = getNow();
-            var query = Query.And(
-                Query<Schedule>.EQ(x => x.State, ScheduleState.Pending),
-                Query<Schedule>.LTE(x => x.WakeTime, now));
-            var update = Update.Combine(Update<Schedule>.Set(x => x.State, ScheduleState.Publishing),
-                Update<Schedule>.Set(x => x.PublishingTime, now));
-            var findAndModifyResult = Collection.FindAndModify(new FindAndModifyArgs
-            {
-                Query = query,
-                SortBy = SortBy<Schedule>.Ascending(x => x.WakeTime),
-                Update = update,
-                VersionReturned = FindAndModifyDocumentVersion.Modified
-            });
-            return findAndModifyResult.GetModifiedDocumentAs<Schedule>();
+            var filter = Builders<Schedule>.Filter;
+            var query = filter.And(
+                filter.Eq(x => x.State, ScheduleState.Pending),
+                filter.Lte(x => x.WakeTime, now));
+            var update = Builders<Schedule>.Update
+                .Set(x => x.State, ScheduleState.Publishing)
+                .Set(x => x.PublishingTime, now);;
+            var options = new FindOneAndUpdateOptions<Schedule> { Sort = Builders<Schedule>.Sort.Ascending(x => x.WakeTime), ReturnDocument = ReturnDocument.After };
+            var findAndModifyResult = Collection.FindOneAndUpdate(query, update, options);
+
+            return findAndModifyResult;
         }
 
         public void MarkAsPublished(Guid id)
         {
             var now = getNow();
-            var query = Query.And(Query<Schedule>.EQ(x => x.Id, id));
-            var update = Update.Combine(Update<Schedule>.Set(x => x.State, ScheduleState.Published),
-                Update<Schedule>.Set(x => x.PublishedTime, now),
-                Update<Schedule>.Unset(x => x.PublishingTime)
-            );
-            Collection.Update(query, update);
+            var update = Builders<Schedule>.Update
+                    .Set(x => x.State, ScheduleState.Published)
+                    .Set(x => x.PublishedTime, now)
+                    .Unset(x => x.PublishingTime);
+            Collection.UpdateOne(x => x.Id == id, update);
         }
 
         public void HandleTimeout()
         {
             var publishingTimeTimeout = getNow() - configuration.PublishTimeout;
-            var query = Query.And(Query<Schedule>.EQ(x => x.State, ScheduleState.Publishing),
-                Query<Schedule>.LTE(x => x.PublishingTime, publishingTimeTimeout));
-            var update = Update.Combine(Update<Schedule>.Set(x => x.State, ScheduleState.Pending),
-                Update<Schedule>.Unset(x => x.PublishingTime));
-            Collection.Update(query, update, UpdateFlags.Multi);
+            var filter = Builders<Schedule>.Filter;
+            var query = filter.And(filter.Eq(x => x.State, ScheduleState.Publishing),
+                filter.Lte(x => x.PublishingTime, publishingTimeTimeout));
+            var update = Builders<Schedule>.Update
+                .Set(x => x.State, ScheduleState.Pending)
+                .Unset(x => x.PublishingTime);
+            Collection.UpdateMany(query, update);
         }
 
-        private MongoCollection<Schedule> CreateAndIndex()
+        private IMongoCollection<Schedule> CreateAndIndex()
         {
-            var collection = Server.GetDatabase(configuration.DatabaseName)
-                .GetCollection<Schedule>(configuration.CollectionName);
-            collection.CreateIndex(IndexKeys<Schedule>.Ascending(x => x.CancellationKey), IndexOptions.SetSparse(true));
-            collection.CreateIndex(IndexKeys<Schedule>.Ascending(x => x.State, x => x.WakeTime));
-            collection.CreateIndex(IndexKeys<Schedule>.Ascending(x => x.PublishedTime),
-                IndexOptions.SetTimeToLive(configuration.DeleteTimeout).SetSparse(true));
+            var collection = GetICollection<Schedule>(configuration.ConnectionString, configuration.DatabaseName, configuration.CollectionName);
+            collection.Indexes.CreateOne(new CreateIndexModel<Schedule>(
+                Builders<Schedule>.IndexKeys.Ascending(x => x.CancellationKey),
+                new CreateIndexOptions { Sparse = true }));
+            collection.Indexes.CreateOne(new CreateIndexModel<Schedule>(
+                Builders<Schedule>.IndexKeys
+                    .Ascending(x => x.State)
+                    .Ascending(x => x.WakeTime)));
+
+            collection.Indexes.CreateOne(new CreateIndexModel<Schedule>(
+                Builders<Schedule>.IndexKeys.Ascending(x => x.PublishedTime),
+                new CreateIndexOptions
+                {
+                    Sparse = true,
+                    ExpireAfter = configuration.DeleteTimeout
+                }));
+
             return collection;
         }
 
-        private MongoServer Connect()
+        private static IMongoDatabase CreateDatabase(MongoUrl connectionString, string databaseName)
         {
-            return new MongoClient(configuration.ConnectionString).GetServer();
+            var settings = MongoClientSettings.FromUrl(connectionString);
+            settings.ReadEncoding = new UTF8Encoding(false, false);
+            var client = new MongoClient(settings);
+            return client.GetDatabase(databaseName);
+        }
+
+        private static IMongoCollection<TDocument> GetICollection<TDocument>(string connectionString, string databaseName, string collectionName)
+        {
+            var database = CreateDatabase(new MongoUrl(connectionString), databaseName);
+            return database.GetCollection<TDocument>(collectionName);
         }
     }
 }
