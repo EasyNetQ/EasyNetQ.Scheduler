@@ -2,7 +2,8 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
   <PropertyGroup>
     <Description>EasyNetQ.Scheduler.Mongo</Description>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
     <None Update="log4net.config">
@@ -16,12 +17,13 @@
   <ItemGroup>
     <PackageReference Include="EasyNetQ" Version="5.5.0" />
     <PackageReference Include="log4net" Version="2.0.15" />
-    <PackageReference Include="Topshelf" Version="3.1.4" />
+    <PackageReference Include="Topshelf" Version="4.3.0" />
     <PackageReference Include="MongoDB.Bson" Version="2.8.1" />
     <PackageReference Include="mongocsharpdriver" Version="2.8.1" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
-    <PackageReference Include="GitVersionTask" Version="5.0.1">
+    <PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
       <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
