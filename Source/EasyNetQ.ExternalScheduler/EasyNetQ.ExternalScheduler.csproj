@@ -5,7 +5,7 @@
     <Description>EasyNetQ.ExternalScheduler</Description>
     <PackageTags>RabbitMQ;Messaging;AMQP;C#</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/EasyNetQ/EasyNetQ/gh-pages/design/logo_design.png</PackageIconUrl>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net7.0;</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;</TargetFrameworks>
     <DefineConstants>$(DefineConstants);LIBLOG_PUBLIC;LIBLOG_PORTABLE</DefineConstants>
     <DefineConstants>$(DefineConstants);LIBLOG_PUBLIC</DefineConstants>
     <LangVersion>7.1</LangVersion>
