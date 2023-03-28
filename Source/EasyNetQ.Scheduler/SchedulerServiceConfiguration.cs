@@ -6,13 +6,16 @@
         public int PurgeIntervalSeconds { get; set; }
         public bool EnableLegacyConventions { get; set; }
 
+        public string RabbitConnectionString { get; set; }
+
         public static SchedulerServiceConfiguration FromConfigFile()
         {
             return new SchedulerServiceConfiguration
             {
                 PublishIntervalSeconds = GetIntAppSetting("PublishIntervalSeconds"),
                 PurgeIntervalSeconds = GetIntAppSetting("PurgeIntervalSeconds"),
-                EnableLegacyConventions = GetBoolAppSetting("EnableLegacyConventions")
+                EnableLegacyConventions = GetBoolAppSetting("EnableLegacyConventions"),
+                RabbitConnectionString = GetConnectionString("rabbit")
             };
         }
     }
