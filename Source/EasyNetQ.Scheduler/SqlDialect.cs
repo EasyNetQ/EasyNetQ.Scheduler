@@ -69,7 +69,7 @@ namespace EasyNetQ.Scheduler
 
         public bool IsDialectFor(string providerName)
         {
-            return providerName == "System.Data.SqlClient";
+            return providerName == "Microsoft.Data.SqlClient";
         }
 
         public string InsertProcedureName { get; private set; }
