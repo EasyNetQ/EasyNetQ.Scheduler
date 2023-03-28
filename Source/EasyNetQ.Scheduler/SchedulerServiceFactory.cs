@@ -7,7 +7,7 @@ namespace EasyNetQ.Scheduler
         public static ISchedulerService CreateScheduler()
         {
             var serviceConfig = SchedulerServiceConfiguration.FromConfigFile();
-            var bus = RabbitHutch.CreateBus(serviceConfig.RabbitConnectionString, sr =>
+            var bus = RabbitHutch.CreateBus(serviceConfig.RabbitHost, sr =>
             {
                 if (serviceConfig.EnableLegacyConventions)
                 {

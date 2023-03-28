@@ -6,7 +6,7 @@
         public int PurgeIntervalSeconds { get; set; }
         public bool EnableLegacyConventions { get; set; }
 
-        public string RabbitConnectionString { get; set; }
+        public string RabbitHost { get; set; }
 
         public static SchedulerServiceConfiguration FromConfigFile()
         {
@@ -15,7 +15,7 @@
                 PublishIntervalSeconds = GetIntAppSetting("PublishIntervalSeconds"),
                 PurgeIntervalSeconds = GetIntAppSetting("PurgeIntervalSeconds"),
                 EnableLegacyConventions = GetBoolAppSetting("EnableLegacyConventions"),
-                RabbitConnectionString = GetConnectionString("rabbit")
+                RabbitHost = GetConnectionString("rabbit")
             };
         }
     }
