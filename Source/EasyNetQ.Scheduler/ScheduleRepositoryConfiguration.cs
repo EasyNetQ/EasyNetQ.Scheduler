@@ -39,7 +39,7 @@ namespace EasyNetQ.Scheduler
             var providerName = ConfigurationManager.ConnectionStrings[connectionStringName].ProviderName;
             return new ScheduleRepositoryConfiguration
             {
-                ProviderName = string.IsNullOrEmpty(providerName) ? "System.Data.SqlClient" : providerName,
+                ProviderName = string.IsNullOrEmpty(providerName) ? "Microsoft.Data.SqlClient" : providerName,
                 ConnectionString = connectionString.ConnectionString,
                 PurgeBatchSize = GetShortAppSetting("PurgeBatchSize"),
                 PurgeDelayDays = GetIntAppSetting("PurgeDelayDays"),

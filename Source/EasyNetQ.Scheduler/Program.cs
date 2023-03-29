@@ -1,4 +1,6 @@
-﻿using log4net.Config;
+﻿using System.Data.Common;
+using log4net.Config;
+using Microsoft.Data.SqlClient;
 using Topshelf;
 
 namespace EasyNetQ.Scheduler
@@ -8,6 +10,7 @@ namespace EasyNetQ.Scheduler
         static void Main()
         {
             XmlConfigurator.Configure();
+            RegisterDbProviderFactories();
 
             HostFactory.Run(hostConfiguration =>
             {
@@ -37,6 +40,13 @@ namespace EasyNetQ.Scheduler
                     });
                 });
             });
+        }
+
+        private static void RegisterDbProviderFactories()
+        {
+            DbProviderFactories.RegisterFactory("Microsoft.Data.SqlClient", SqlClientFactory.Instance);
+            DbProviderFactories.RegisterFactory("Npgsql", Npgsql.NpgsqlFactory.Instance);
+            DbProviderFactories.RegisterFactory("Devart.Data.PostgreSql", Devart.Data.PostgreSql.PgSqlProviderFactory.Instance);
         }
     }
 }

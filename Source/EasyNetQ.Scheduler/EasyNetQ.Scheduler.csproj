@@ -2,7 +2,7 @@
   <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), build.props))\build.props" />
   <PropertyGroup>
     <Description>EasyNetQ.Scheduler</Description>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
   <ItemGroup>
@@ -17,13 +17,18 @@
     <Reference Include="System.Data" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Devart.Data.PostgreSql" Version="8.1.134" />
     <PackageReference Include="EasyNetQ" Version="5.5.0" />
-    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="log4net" Version="2.0.15" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Npgsql" Version="7.0.2" />
     <PackageReference Include="RabbitMQ.Client" Version="[6.2.1,6.3.0)" />
-    <PackageReference Include="Topshelf" Version="4.2.1" />
-    <PackageReference Include="GitVersionTask" Version="5.0.1">
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+    <PackageReference Include="Topshelf" Version="4.3.0" />
+    <PackageReference Include="GitVersion.MsBuild" Version="5.12.0">
       <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">

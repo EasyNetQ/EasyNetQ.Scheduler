@@ -40,5 +40,10 @@ namespace EasyNetQ.Scheduler
             }
             return value;
         }
+
+        public static string GetConnectionString(string connectionStringName)
+        {
+            return ConfigurationManager.ConnectionStrings[connectionStringName].ConnectionString;
+        }
     }
 }
