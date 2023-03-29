@@ -40,9 +40,9 @@ name: .NET Core Desktop
 
 on:
     push:
-        branches: [ "master" ]
+        branches: [ "master", "configure-github-actions" ]
     pull_request:
-        branches: [ "master" ]
+        branches: [ "master", "configure-github-actions" ]
 
 jobs:
 
