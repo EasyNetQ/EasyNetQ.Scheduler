@@ -1,0 +1,42 @@
+﻿{
+  "_id": BinData(3, 'LH9BsL6fuEWaP4utMDFX1w=='),
+  "WakeTime" : ISODate("2022-09-28T07:17:22.451Z"),
+  "BindingKey" : "Message",
+  "Exchange" : "Message",
+  "ExchangeType" : "topic",
+  "RoutingKey" : "#",
+  "InnerMessage" : BinData(0,"eyJldmVudFR5cGUiOiJTZW5kTGVhcm5Qcm9tb0FjdGlvbkVtYWlsMSIsInVzZXJJZCI6Ijk1Njc0YzBhMmY5YjQ5ZjRhZjQ1MWQ4YTlmODQ0YzkzIiwidHJ5Q291bnQiOjB9"),
+  "BasicProperties" : {
+    "ContentType" : null,
+    "ContentEncoding" : null,
+    "Headers" : {
+
+    },
+    "DeliveryMode" : 2,
+    "Priority" : 0,
+    "CorrelationId" : "3952ffcc-a6f9-4706-87f9-9edbfc5f74b7",
+    "ReplyTo" : null,
+    "Expiration" : null,
+    "MessageId" : null,
+    "Timestamp" : 0,
+    "Type" : "Message",
+    "UserId" : null,
+    "AppId" : null,
+    "ClusterId" : null,
+    "ContentTypePresent" : false,
+    "ContentEncodingPresent" : false,
+    "HeadersPresent" : true,
+    "DeliveryModePresent" : true,
+    "PriorityPresent" : false,
+    "CorrelationIdPresent" : true,
+    "ReplyToPresent" : false,
+    "ExpirationPresent" : false,
+    "MessageIdPresent" : false,
+    "TimestampPresent" : false,
+    "TypePresent" : true,
+    "UserIdPresent" : false,
+    "AppIdPresent" : false,
+    "ClusterIdPresent" : false
+  },
+  "State" : 1
+}

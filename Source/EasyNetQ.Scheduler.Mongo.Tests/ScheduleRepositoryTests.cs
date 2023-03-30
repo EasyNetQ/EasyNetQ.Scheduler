@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using MongoDB.Driver;
 using Xunit;
@@ -84,6 +86,24 @@ namespace EasyNetQ.Scheduler.Mongo.Tests
             var actual = databaseFixture.GetDocument(id);
 
             Assert.Equal(ScheduleState.Published, actual["State"]);
+        }
+
+        [Fact]
+        public void Should_be_able_to_get_original_message()
+        {
+            databaseFixture.InitDocumentsWithOriginalBSON();
+            var actualIds = new HashSet<Guid>();
+            while (true)
+            {
+                var schedule = scheduleRepository.GetPending();
+                if (schedule == null)
+                    break;
+
+                actualIds.Add(schedule.Id);
+            }
+
+            Assert.True(actualIds.Count > 0);
+            Assert.Contains(databaseFixture.PendingOldDocId, actualIds);
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Text;
 using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
 
 namespace EasyNetQ.Scheduler.Mongo
 {

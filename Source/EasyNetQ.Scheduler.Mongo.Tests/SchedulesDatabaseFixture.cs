@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
@@ -13,6 +14,7 @@ namespace EasyNetQ.Scheduler.Mongo.Tests
     public class SchedulesDatabaseFixture : IDisposable
     {
         public readonly IMongoCollection<BsonDocument> Collection;
+        public readonly Guid PendingOldDocId = Guid.Parse("b0417f2c-9fbe-45b8-9a3f-8bad303157d7");
         private readonly IMongoDatabase database;
 
         public readonly ScheduleRepositoryConfiguration Configuration = new ScheduleRepositoryConfiguration
@@ -63,14 +65,19 @@ namespace EasyNetQ.Scheduler.Mongo.Tests
                 .Find(d => d["_id"] == id)
                 .FirstOrDefault();
 
-        private static IEnumerable<BsonDocument> LoadBSONs()
+        public void InitDocumentsWithOriginalBSON()
+        {
+            var bsons = LoadOldBSONs().ToList();
+            Collection.InsertMany(bsons);
+        }
+
+        private static IEnumerable<BsonDocument> LoadOldBSONs()
         {
             var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "BSONs");
             foreach (var fileName in Directory.GetFiles(path))
             {
                 var content = File.ReadAllText(fileName);
                 var bson = BsonSerializer.Deserialize<BsonDocument>(content);
-                bson["_id"] = Guid.NewGuid();
                 yield return  bson;
             }
         }
