@@ -1,5 +1,4 @@
 ﻿using log4net.Config;
-using MongoDB.Bson.Serialization.Conventions;
 using Topshelf;
 
 namespace EasyNetQ.Scheduler.Mongo
@@ -9,7 +8,6 @@ namespace EasyNetQ.Scheduler.Mongo
         private static void Main()
         {
             XmlConfigurator.Configure();
-            InitializeMongoConventions();
 
             HostFactory.Run(hostConfiguration =>
             {
@@ -40,12 +38,6 @@ namespace EasyNetQ.Scheduler.Mongo
                     });
                 });
             });
-        }
-
-        private static void InitializeMongoConventions()
-        {
-            ConventionRegistry.Register("ignoreIfNull", new ConventionPack {new IgnoreIfNullConvention(true)}, t => true);
-            ConventionRegistry.Register("ignoreExtraElements", new ConventionPack {new IgnoreExtraElementsConvention(true)}, t => true);
         }
     }
 }
