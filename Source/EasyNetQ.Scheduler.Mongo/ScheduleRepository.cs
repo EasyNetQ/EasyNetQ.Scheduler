@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
+using MongoDB.Bson.Serialization.Conventions;
 using MongoDB.Driver;
-using MongoDB.Driver.Builders;
 
 namespace EasyNetQ.Scheduler.Mongo
 {
@@ -79,6 +79,7 @@ namespace EasyNetQ.Scheduler.Mongo
 
         private IMongoCollection<Schedule> CreateAndIndex()
         {
+            InitializeMongoConventions();
             var collection = GetICollection<Schedule>(configuration.ConnectionString, configuration.DatabaseName, configuration.CollectionName);
             collection.Indexes.CreateOne(new CreateIndexModel<Schedule>(
                 Builders<Schedule>.IndexKeys.Ascending(x => x.CancellationKey),
@@ -111,6 +112,12 @@ namespace EasyNetQ.Scheduler.Mongo
         {
             var database = CreateDatabase(new MongoUrl(connectionString), databaseName);
             return database.GetCollection<TDocument>(collectionName);
+        }
+
+        private static void InitializeMongoConventions()
+        {
+            ConventionRegistry.Register("ignoreIfNull", new ConventionPack {new IgnoreIfNullConvention(true)}, t => true);
+            ConventionRegistry.Register("ignoreExtraElements", new ConventionPack {new IgnoreExtraElementsConvention(true)}, t => true);
         }
     }
 }
